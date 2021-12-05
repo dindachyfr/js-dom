@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home | Food Items</title>
+    <link rel= "stylesheet" href="style-home.css">
+</head>
+<body>
+    <main class="container">
+        <section class='main-content-wrapper'>
+            <header class="header-top">
+                <img src="menu-icon.svg" alt="">
+                <h4 class='title-text'>Food Items</h4>
+                <img src="magnifying-glass.svg" alt="">
+            </header>
+            <div class="lower-main-content">
+                <aside class="sidebar">
+                    <div class="sidebar-wrapper">
+                        <img src="fork.svg" alt="">
+                        <img src="clipboard.svg" alt="">
+                        <figure class= "add-item">
+                            <img src="add.svg" alt="" >
+                        </figure>
+                        </div>
+                </aside>
+
+                <!---menu here-->
+                <main id='card-section' class="main-content">
+
+                </main>
+
+            </div>
+        </section>
+        <section class='cart-content'>
+            <header class="header-chart">
+                <h4 class='title-text'>Cart</h4>
+
+                <!--      qty here      -->
+                <h4 class='cart-qty title-text'>0</h4>
+            </header>
+            <div class="order-wrapper">
+                <figure class="empt-cart-icon">
+                    <img src="if cart empty.svg" alt="">
+                </figure>
+
+                <!--cart items here-->
+                <div id="order-items">
+
+                </div>
+            </div>
+
+            <footer class='cart-footer'>
+                <div class="subtotal-text">
+                    <h4>Subtotal:</h4>
+                    <!--        total price here        -->
+                    <h4 class='subtotal-price'></h4>
+                </div>
+                <h4 class='tax-desc'>*Tax not included</h4>
+                <div class="checkout-button cart-button">Checkout</div>
+                <div class="cancel-button cart-button">Cancel</div>
+            </footer>
+
+
+            <!---receipt modal-->
+            <div id="container-modal">
+                <div class="container-modal">
+                    <div class="header-container">
+                        <div class="header-container-upper">
+                            <h3>Checkout</h3>
+                            <h4>Receipt no: #19738638</h4>
+                        </div>
+                        <h4>Cashier: Rita Ratatuli</h4>
+                    </div>
+        
+                    <div class="receipt-container">
+                        <div id="receipt-item">
+                            <div id="receipt-item">
+                                <div class="receipt-item text">
+                                    <h3>Cafe Latte 1x</h3>
+                                    <h3>IDR 15000</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tax-receipt text">
+                            <h3>PPN 10%</h3>
+                            <h3 class="tax-amount">IDR 1500</h3>
+                        </div>
+                        <div class="total-receipt">
+                            <h3 class="total-amount">Total: IDR 16500</h3>
+                        </div>
+                    </div>
+        
+                    <div class="lower-button-receipt">
+                        <div class="print-button receipt-button">Print</div>
+                        <h3>Or</h3>
+                        <div class="email-button receipt-button">Send Email</div>
+                    </div>
+        
+        
+                </div>
+            </div>
+
+            <!---add item modal-->
+            <div id="container-modal-1">
+                <div class="container-modal-1">
+                    <h3>Add Item</h3>
+                    <form class="form-name">
+                        <h3>Name</h3>
+                        <input type="text" placeholder="" onchange="handleInputName(this)">
+                    </form>
+        
+                    <form class="form-image">
+                        <h3>Image</h3>
+                        <input type="text" placeholder="" onchange="handleInputImage(this)">
+                    </form>
+        
+                    <form class="form-price">
+                        <h3>Price</h3>
+                        <input type="number" placeholder="" onchange="handleInputPrice(this)">
+                    </form>
+        
+        
+                    <form class="form-category">
+                        <h3>Category</h3>
+                        <select id="category" name="category">
+                          <option value="Food">Food</option>
+                          <option value="Beverages">Beverages</option>
+                        </select>
+                      </form>
+                    
+                    <div class="lower-button-item">
+                        <h4 class="cancel-button-item add-item-button">Cancel</h4>
+                        <h4 class="add-button-item add-item-button" onclick="handleAddData()">Add</h4>
+                    </div>
+        
+                
+                    </div>
+        
+            </div>
+        
+        
+        </section>
+    </main>
+
+
+
+
+
+
+    <script type='text/javascript'>
+
+        let dataMenu = []
+        let totalPrice;
+        let totalItems;
+
+
+    //fetch menu from API
+    fetch('https://61a711008395690017be94b2.mockapi.io/menu')
+        .then(response => response.json())
+        .then(data=> {
+            dataMenu = data;
+            data.map((elements)=>{
+                document.getElementById('card-section').innerHTML += 
+                    `<div class="card" onclick="addToCart(${elements.id})">
+                        <img src=${elements.image} alt="">
+                        <h3>${elements.name}</h3>
+                        <h3>IDR ${elements.price}</h3>
+                    </div>`
+                })
+        })
+
+        //empty array to keep the picked items
+        let cart = []
+        let tempItem = {
+            createdAt: null,
+            name: null,
+            image: null,
+            price: null,
+            id: null,
+        }
+
+        //addToCart
+        const addToCart = (id) =>{      
+            if (cart.find((menu)=> menu.id == id)){
+                alert('Product already exists in cart')
+            }
+            else{
+            dataMenu.map((menu)=> {
+                if(menu.id == id){
+                    cart.push({...menu, qty: 1})
+                    document.querySelector('.empt-cart-icon').style= 'display:none';
+                }
+                })
+        
+            }
+        
+        updateCart();
+        }
+
+        //update cart list
+        const updateCart = () =>{
+            handleCartItems();
+            handleSubtotalPrice();
+        }
+
+        const handleCartItems = () =>{
+            document.getElementById('order-items').innerHTML = '';
+            cart.map((item)=>{
+                document.getElementById('order-items').innerHTML +=
+                `<div class='order-items'>
+                   <img src="${item.image}" alt="" onclick="removeItems(${item.id})">
+                    <div class="order-items-middle">
+                        <figcaption class='food-name'>${item.name}</figcaption>
+                        <div class="order-items-middle-lower" > 
+                            <button class="minus-item order-button" onclick="qtyUpdate('reduce', ${item.id})">
+                                -
+                            </button>
+                            <div class="qty-order order-button" >${item.qty}</div>
+                            <button class="plus-item order-button" onclick="qtyUpdate('add', ${item.id})">
+                                +
+                            </button>
+                            </div>
+                        </div>
+                        <figcaption class='food-price'>IDR ${item.price}</figcaption>
+                </div>`
+            })
+        }
+
+        const qtyUpdate = (action, id) =>{
+            cart = cart.map((item)=>{
+
+                let qty = item.qty
+                if(item.id == id){
+                    if(action == 'reduce'){
+                        qty--
+                    }
+                    if(action == 'add'){
+                        qty++
+                    }
+                    if(qty <= 0) {
+                        qty = 0;
+                    }
+                }
+                return {...item, qty}
+            })
+            updateCart()
+        }
+
+        const handleSubtotalPrice = ()=>{
+            totalPrice = 0;
+            totalItems = 0;
+
+
+            cart.map((items) =>{
+                totalPrice += items.price * items.qty
+                totalItems += items.qty
+            })
+            document.querySelector('.subtotal-price').innerHTML = `IDR ${totalPrice}*`
+            document.querySelector('.cart-qty').innerHTML = `${totalItems}`
+            document.querySelector('.tax-amount').innerHTML = `IDR ${(totalPrice * 0.1)}`
+            document.querySelector('.total-amount').innerHTML = `Total: IDR ${(totalPrice + (totalPrice*0.1))}`
+
+
+        }
+
+        const removeItems = (id) =>{
+            cart = cart.filter((items)=> items.id != id);
+            updateCart()
+
+        }
+
+        //Checkout Modal
+
+        let checkoutButton = document.querySelector('.checkout-button')
+        let printButton = document.querySelector('.print-button')
+        let emailButton = document.querySelector('.email-button')
+        let cancelButton = document.querySelector('.cancel-button')
+
+        checkoutButton.addEventListener('click', function(){
+            document.getElementById('container-modal').style = 'display:block';
+            document.getElementById('receipt-item').innerHTML = '';
+            cart.map((items)=>{
+                document.getElementById('receipt-item').innerHTML +=
+                `<div id="receipt-item">
+                    <div class="receipt-item text">
+                        <h3>${items.name} ${items.qty}x</h3>
+                        <h3>IDR ${(items.price * items.qty)}</h3>
+                    </div>
+                </div>
+`
+
+            })
+        }) 
+
+        printButton.addEventListener('click', ()=>{
+            document.getElementById('container-modal').style = 'display:none';
+
+        })
+
+        emailButton.addEventListener('click', ()=>{
+            document.getElementById('container-modal').style = 'display:none';
+        })
+
+        cancelButton.addEventListener('click', ()=>{
+            document.getElementById('order-items').innerHTML = '';
+            updateCart()
+        })
+
+                //modal add item
+        let addItemButton = document.querySelector('.add-item')
+        let cancelItemButton = document.querySelector('.cancel-button-item')
+
+
+        checkoutButton.addEventListener('click', function(){
+            document.getElementById('container-modal').style = 'display:block';
+        }) 
+
+        printButton.addEventListener('click', ()=>{
+            document.getElementById('container-modal').style = 'display:none';
+        })
+
+        emailButton.addEventListener('click', ()=>{
+            document.getElementById('container-modal').style = 'display:none';
+        })
+
+        //modal add item
+
+        addItemButton.addEventListener('click', ()=>{
+            document.getElementById('container-modal-1').style = 'display:block';
+        })
+
+        const handleInputName = (e)=> {
+        tempItem = {
+            ...tempItem,
+            name: e.value
+        }
+    }
+
+    const handleInputImage = (el)=> {
+        tempItem = {
+            ...tempItem,
+            image: el.value
+        }
+    }
+
+    const handleInputPrice = (elements)=> {
+        tempItem = {
+            ...tempItem,
+            price: elements.value
+        }
+    }
+
+    const handleAddData = ()=> {
+        document.getElementById('container-modal-1').style = 'display:none'
+        new Promise((resolve) => {
+                  resolve(dataMenu.push(tempItem))
+              }).then(()=> {
+                document.getElementById('card-section').innerHTML += 
+                    `<div class="card" onclick="addToCart(${tempItem.id})">
+                        <img src=${tempItem.image} alt="">
+                        <h3>${tempItem.name}</h3>
+                        <h3>IDR ${tempItem.price}</h3>
+                    </div>`
+              })
+      }
+
+
+
+
+        cancelItemButton.addEventListener('click', ()=>{
+            document.getElementById('container-modal-1').style = 'display:none'
+        })
+
+
+    </script>
+</body>
+</html>

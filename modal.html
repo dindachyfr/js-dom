@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style-modal.css">
+    <title>Modal</title>
+</head>
+<body>
+    <button class="checkout-button">OPEN</button>
+    <button class="add-item">ADD ITEM</button>
+    <div id="container-modal">
+        <div class="container-modal">
+            <div class="header-container">
+                <div class="header-container-upper">
+                    <h3>Checkout</h3>
+                    <h4>Receipt no: #19738638</h4>
+                </div>
+                <h4>Cashier: Rita Ratatuli</h4>
+            </div>
+
+            <div class="receipt-container">
+                <div id="receipt-item">
+                    <div class="receipt-item text">
+                        <h3>Cafe Latte 1x</h3>
+                        <h3>IDR 15000</h3>
+                    </div>
+
+                </div>
+                <div class="tax-receipt text">
+                    <h3>PPN 10%</h3>
+                    <h3>IDR 1500</h3>
+                </div>
+                <div class="total-receipt">
+                    <h3>Total: IDR 16500</h3>
+                </div>
+            </div>
+
+            <div class="lower-button-receipt">
+                <div class="print-button receipt-button">Print</div>
+                <h3>Or</h3>
+                <div class="email-button receipt-button">Send Email</div>
+            </div>
+
+
+        </div>
+    </div>
+
+    <div id="container-modal-1">
+        <div class="container-modal-1">
+            <h3>Add Item</h3>
+            <form class="form-name">
+                <h3>Name</h3>
+                <input type="text" placeholder="">
+            </form>
+
+            <form class="form-image">
+                <h3>Image</h3>
+                <input type="text" placeholder="">
+            </form>
+
+            <form class="form-price">
+                <h3>Price</h3>
+                <input type="number" placeholder="">
+            </form>
+
+
+            <form class="form-category">
+                <h3>Category</h3>
+                <select id="category" name="category">
+                  <option value="Food">Food</option>
+                  <option value="Beverages">Beverages</option>
+                </select>
+              </form>
+            
+            <div class="lower-button-item">
+                <h4 class="cancel-button-item add-item-button">Cancel</h4>
+                <h4 class="add-button-item add-item-button">Add</h4>
+            </div>
+
+        
+            </div>
+
+    </div>
+
+
+    <script type="text/javascript">
+
+        let checkoutButton = document.querySelector('.checkout-button')
+        let printButton = document.querySelector('.print-button')
+        let emailButton = document.querySelector('.email-button')
+
+        //modal add item
+        let addItemButton = document.querySelector('.add-item')
+        let cancelItemButton = document.querySelector('.cancel-button-item')
+
+
+        checkoutButton.addEventListener('click', function(){
+            document.getElementById('container-modal').style = 'display:block';
+        }) 
+
+        printButton.addEventListener('click', ()=>{
+            document.getElementById('container-modal').style = 'display:none';
+        })
+
+        emailButton.addEventListener('click', ()=>{
+            document.getElementById('container-modal').style = 'display:none';
+        })
+
+        //modal add item
+
+        addItemButton.addEventListener('click', ()=>{
+            document.getElementById('container-modal-1').style = 'display:block';
+        })
+
+        cancelItemButton.addEventListener('click', ()=>{
+            document.getElementById('container-modal-1').style = 'display:none'
+        })
+
+    </script>
+</body>
+</html>
